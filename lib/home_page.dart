@@ -56,6 +56,25 @@ class _HomePageState extends State<HomePage> {
     {"question": "What do you call a fish with no eye", "answer": "Fsh"},
   ];
   int index = 1;
+  void changeIndex(String direction){
+    if(direction=="left"){
+      setState(() {
+        if(index == 0){
+          index = jokes.length - 1;
+        }else{
+          index--;
+        }
+      });
+    }else if(direction=="right"){
+      setState(() {
+        if(index == jokes.length - 1){
+          index = 0;
+        }else{
+          index++;
+        }
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,14 +107,7 @@ class _HomePageState extends State<HomePage> {
                 FloatingActionButton(
                   backgroundColor: Colors.deepOrange,
                   onPressed: () {
-                    setState(() {
-                     if(index == 0){
-                       index = jokes.length - 1;
-                     }else{
-                       index--;
-                     }
-
-                    });
+                    changeIndex('left');
                   },
                   child: const Icon(Icons.arrow_back_ios_outlined),
                 ),
@@ -105,13 +117,7 @@ class _HomePageState extends State<HomePage> {
                 FloatingActionButton(
                   backgroundColor: Colors.deepOrange,
                   onPressed: () {
-                    setState(() {
-                      if(index == jokes.length - 1){
-                        index = 0;
-                      }else{
-                        index++;
-                      }
-                    });
+                    changeIndex('right');
                   },
                   child: const Icon(Icons.arrow_forward_ios_outlined),
                 ),
