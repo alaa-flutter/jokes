@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'Providers/theme_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -56,75 +59,104 @@ class _HomePageState extends State<HomePage> {
     {"question": "What do you call a fish with no eye", "answer": "Fsh"},
   ];
   int index = 1;
-  void changeIndex(String direction){
-    if(direction=="left"){
+  void changeIndex(String direction) {
+    if (direction == "left") {
       setState(() {
-        if(index == 0){
+        if (index == 0) {
           index = jokes.length - 1;
-        }else{
+        } else {
           index--;
         }
       });
-    }else if(direction=="right"){
+    } else if (direction == "right") {
       setState(() {
-        if(index == jokes.length - 1){
+        if (index == jokes.length - 1) {
           index = 0;
-        }else{
+        } else {
           index++;
         }
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              jokes[index]["question"] ?? '',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 80,
+          ),
+          SwitchListTile(
+            title: Text(
+              Provider.of<ThemeProvider>(context).isDarkMode
+                  ? 'Light Mode'
+                  : 'Dark Mode',
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            secondary: Icon(Provider.of<ThemeProvider>(context).isDarkMode
+                ? Icons.light_mode_outlined
+                : Icons.dark_mode_outlined),
+            value: Provider.of<ThemeProvider>(context).isDarkMode,
+            onChanged: (bool value) {
+              setState(() {
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme(value);
+              });
+            },
+          ),
+          const SizedBox(
+            height: 160,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  Text(
+                    jokes[index]["question"] ?? '',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  Text(
+                    jokes[index]["answer"] ?? '',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FloatingActionButton(
+                        backgroundColor: Colors.deepOrange,
+                        onPressed: () {
+                          changeIndex('left');
+                        },
+                        child: const Icon(Icons.arrow_back_ios_outlined),
+                      ),
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: Colors.deepOrange,
+                        onPressed: () {
+                          changeIndex('right');
+                        },
+                        child: const Icon(Icons.arrow_forward_ios_outlined),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 48),
-            Text(
-              jokes[index]["answer"] ?? '',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.deepOrange,
-                  onPressed: () {
-                    changeIndex('left');
-                  },
-                  child: const Icon(Icons.arrow_back_ios_outlined),
-                ),
-                const SizedBox(
-                  width: 25,
-                ),
-                FloatingActionButton(
-                  backgroundColor: Colors.deepOrange,
-                  onPressed: () {
-                    changeIndex('right');
-                  },
-                  child: const Icon(Icons.arrow_forward_ios_outlined),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
